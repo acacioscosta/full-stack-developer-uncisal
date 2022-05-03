@@ -17,11 +17,11 @@ const add = async (req, res) => {
     try {
         const connection = await getConnection()
     
-        const sql = `INSERT INTO tasks(description,status) VALUES ($1,1)`
+        const sql = `INSERT INTO tasks(description,status) VALUES ($1,'PENDENTE')`
     
         const { rowCount } = await connection.query(sql, [req.body.description])
     
-        return res.status(200).json({ data: rowCount })
+        return res.status(200).json({ sucsess: true, data: rowCount })
     } catch (error) {
         return res.status(400).json({ error: JSON.stringify(error) })
     }

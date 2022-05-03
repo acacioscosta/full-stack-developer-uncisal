@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>My Tasks</title>
+    <style>
+        .v-label{
+            right: auto !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" style="min-height: 100vh;">
+        <v-container style="padding-top: 50px;">
+            <v-form style="margin-bottom: 40px;">
+                <v-row>
+                    <v-col cols="12" sm="9">
+                        <v-text-field
+                            label="Descrição"
+                            outlined
+                            v-model="description"
+                        />
+                    </v-col>
+
+                    <v-col cols="12" sm="3">
+                        <v-btn
+                            x-large
+                            block
+                            style="background-color: #1867c0; color: white; font-weight: bold;"
+                            @click="addTask"
+                            :disabled="!description"
+                        >
+                            Adicionar
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-form>
+
+            <v-divider></v-divider>
+
+            <v-simple-table fixed-header style="margin-top: 40px;">
+                <template v-slot:default>
+                    <thead>
+                        <tr>
+                            <th style="text-align: left; font-size: 16px;">
+                                Descrição
+                            </th>
+                            <th style="text-align: left; font-size: 16px;">
+                                Status
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="item in tasks"
+                            :key="item.id"
+                        >
+                            <td>{{ item.description }}</td>
+                            <td>{{ item.status }}</td>
+                        </tr>
+                    </tbody>
+                </template>
+            </v-simple-table>
+        </v-container>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script>
+        new Vue({
+            el: "#app",
+            data: () => ({
+                tasks: [],
+                description: ''
+            }),
+            methods: {
+                loadTasks() {
+                    fetch('http://localhost:3000/tasks')
+                        .then(response => response.json())
+                        .then(data => this.tasks = data.data)
+                },
+
+                async addTask() {
+                    fetch('http://localhost:3000/task', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ description: this.description })
+                    })
+                        .then(() => {
+                            this.description = ''
+
+                            this.loadTasks()
+                        })
+                }
+            },
+            mounted () {    
+                this.loadTasks()
+            },
+        })
+    </script>
+</body>
+</html>
