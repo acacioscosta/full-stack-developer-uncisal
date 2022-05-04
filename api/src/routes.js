@@ -8,4 +8,6 @@ module.exports = app => {
     app.patch('/task/:id', Controller.update)
 
     app.delete('/task/:id', Controller.remove)
+
+    app.delete('/tasks', Controller.removeAll)
 }

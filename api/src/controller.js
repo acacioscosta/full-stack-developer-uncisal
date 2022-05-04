@@ -4,7 +4,7 @@ const list = async (req, res) => {
     try {
         const connection = await getConnection()
     
-        const { rows } = await connection.query('SELECT * FROM tasks')
+        const { rows } = await connection.query('SELECT * FROM tasks ORDER BY status DESC')
 
         return res.status(200).json({ data: rows })
     } catch (error) {
@@ -31,12 +31,12 @@ const update = async (req, res) => {
     try {
         const connection = await getConnection()
     
-        const { description, status } = req.body
+        const { status } = req.body
         const { id } = req.params
     
-        const sql = 'UPDATE tasks SET description=$1, status=$2 WHERE id=$3'
+        const sql = 'UPDATE tasks SET status=$1 WHERE id=$2'
     
-        const { rowCount } = await connection.query(sql, [description, status, id])
+        const { rowCount } = await connection.query(sql, [status, id])
 
         return res.status(200).json({ data: rowCount })
     } catch (error) {
@@ -60,9 +60,22 @@ const remove = async (req, res) => {
     }
 }
 
+const removeAll = async (req, res) => {
+    try {
+        const connection = await getConnection()
+    
+        const { rowCount } = await connection.query('DELETE FROM tasks')
+
+        return res.status(200).json({ data: rowCount })
+    } catch (error) {
+        return res.status(400).json({ error: JSON.stringify(error) })
+    }
+}
+
 module.exports = {
     list,
     add,
     update,
-    remove
+    remove,
+    removeAll
 }
