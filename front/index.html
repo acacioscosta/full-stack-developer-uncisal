@@ -17,6 +17,9 @@
         .v-label{
             right: auto !important;
         }
+        .theme--dark.v-btn.v-btn--disabled.v-btn--has-bg{
+            background-color: #f5f5f5 !important;
+        }
     </style>
 </head>
 <body>
@@ -24,7 +27,7 @@
         <v-container style="padding-top: 50px;">
             <v-form style="margin-bottom: 40px;">
                 <v-row>
-                    <v-col cols="12" sm="9">
+                    <v-col cols="12" sm="6">
                         <v-text-field
                             label="Descrição"
                             outlined
@@ -43,20 +46,40 @@
                             Adicionar
                         </v-btn>
                     </v-col>
+
+                    <v-col cols="12" sm="3">
+                        <v-btn
+                            x-large
+                            block
+                            outlined
+                            @click="clear"
+                        >
+                            Limpar
+                        </v-btn>
+                    </v-col>
                 </v-row>
             </v-form>
 
             <v-divider></v-divider>
 
-            <v-simple-table fixed-header style="margin-top: 40px;">
+            <v-simple-table
+                fixed-header
+                style="margin-top: 40px;"
+            >
                 <template v-slot:default>
                     <thead>
                         <tr>
+                            <th style="text-align: left; font-size: 16px;">
+                                ID
+                            </th>
                             <th style="text-align: left; font-size: 16px;">
                                 Descrição
                             </th>
                             <th style="text-align: left; font-size: 16px;">
                                 Status
+                            </th>
+                            <th style="text-align: left; font-size: 16px;">
+                                
                             </th>
                         </tr>
                     </thead>
@@ -65,8 +88,33 @@
                             v-for="item in tasks"
                             :key="item.id"
                         >
+                            <td>{{ item.id }}</td>
                             <td>{{ item.description }}</td>
                             <td>{{ item.status }}</td>
+                            <td style="text-align: center;">
+                                <v-btn
+                                    rounded
+                                    small
+                                    :dark="item.status !== 'FINALIZADO'"
+                                    @click="finish(item.id)"
+                                    :disabled="item.status === 'FINALIZADO'"
+                                    color="#4caf50"
+                                >
+                                    Finalizar
+                                </v-btn>
+
+                                <v-btn
+                                    elevation="1"
+                                    rounded
+                                    small
+                                    color="#ff5252"
+                                    :dark="item.status !== 'FINALIZADO'"
+                                    @click="cancel(item.id)"
+                                    :disabled="item.status === 'FINALIZADO'"
+                                >
+                                    Cancelar
+                                </v-btn>
+                            </td>
                         </tr>
                     </tbody>
                 </template>
@@ -90,7 +138,7 @@
                         .then(data => this.tasks = data.data)
                 },
 
-                async addTask() {
+                addTask() {
                     fetch('http://localhost:3000/task', {
                         method: 'POST',
                         headers: {
@@ -101,6 +149,39 @@
                         .then(() => {
                             this.description = ''
 
+                            this.loadTasks()
+                        })
+                },
+
+                finish(id) {
+                    fetch(`http://localhost:3000/task/${id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ status: 'FINALIZADO' })
+                    })
+                        .then(() => {
+                            this.description = ''
+    
+                            this.loadTasks()
+                        })
+                },
+                
+                cancel(id) {
+                    fetch(`http://localhost:3000/task/${id}`, { method: 'DELETE' })
+                        .then(() => {
+                            this.description = ''
+    
+                            this.loadTasks()
+                        })
+                },
+
+                clear() {
+                    fetch(`http://localhost:3000/tasks`, { method: 'DELETE' })
+                        .then(() => {
+                            this.description = ''
+    
                             this.loadTasks()
                         })
                 }
