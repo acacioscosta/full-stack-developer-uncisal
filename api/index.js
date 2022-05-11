@@ -12,4 +12,4 @@ app.use(bodyParser.urlencoded({ extended: false }))
 const routes = require('./src/routes')
 routes(app)
 
-app.listen(3000, console.log('Server ON at port 3000'))
+app.listen(5000, console.log('Server ON at port 5000'))
