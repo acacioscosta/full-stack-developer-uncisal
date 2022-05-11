@@ -12,7 +12,10 @@ let connectionString = process.env.NODE_ENV === 'development'
     : process.env.DATABASE_URL
 
 const getConnection = () => {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+    const pool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }
+    })
 
     return pool.connect()
 }
