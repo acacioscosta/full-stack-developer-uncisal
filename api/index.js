@@ -12,4 +12,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 const routes = require('./src/routes')
 routes(app)
 
-app.listen(5000, console.log('Server ON at port 5000'))
+const port = process.env.PORT || 3000
+
+app.listen(port, console.log('Server ON at port ' + port))
