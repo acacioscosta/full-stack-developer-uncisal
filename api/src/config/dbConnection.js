@@ -1,11 +1,11 @@
 const { Pool } = require('pg')
-const {
-    user,
-    password,
-    host,
-    port,
-    database
-} = require('./env.json')['database']
+// const {
+//     user,
+//     password,
+//     host,
+//     port,
+//     database
+// } = require('./env.json')['database']
 
 let connectionString = process.env.NODE_ENV === 'development'
     ? `postgres://${user}:${password}@${host}:${port}/${database}`
