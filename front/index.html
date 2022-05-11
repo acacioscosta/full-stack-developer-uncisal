@@ -129,17 +129,18 @@
             el: "#app",
             data: () => ({
                 tasks: [],
-                description: ''
+                description: '',
+                url: 'https://full-stack-api-uncisal.herokuapp.com'
             }),
             methods: {
                 loadTasks() {
-                    fetch('http://localhost:3000/tasks')
+                    fetch(this.url+'/tasks')
                         .then(response => response.json())
                         .then(data => this.tasks = data.data)
                 },
 
                 addTask() {
-                    fetch('http://localhost:3000/task', {
+                    fetch(this.url+'/task', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -154,7 +155,7 @@
                 },
 
                 finish(id) {
-                    fetch(`http://localhost:3000/task/${id}`, {
+                    fetch(`${this.url}/task/${id}`, {
                         method: 'PATCH',
                         headers: {
                             'Content-Type': 'application/json'
@@ -169,7 +170,7 @@
                 },
                 
                 cancel(id) {
-                    fetch(`http://localhost:3000/task/${id}`, { method: 'DELETE' })
+                    fetch(`${this.url}/task/${id}`, { method: 'DELETE' })
                         .then(() => {
                             this.description = ''
     
@@ -178,7 +179,7 @@
                 },
 
                 clear() {
-                    fetch(`http://localhost:3000/tasks`, { method: 'DELETE' })
+                    fetch(`${this.url}/tasks`, { method: 'DELETE' })
                         .then(() => {
                             this.description = ''
     
