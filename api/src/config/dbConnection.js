@@ -12,7 +12,7 @@ let connectionString = process.env.NODE_ENV === 'development'
     : process.env.DATABASE_URL
 
 const getConnection = () => {
-    const pool = new Pool({ connectionString })
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL })
 
     return pool.connect()
 }
